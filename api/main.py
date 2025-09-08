@@ -8,18 +8,23 @@ from database import get_db
 import models
 from objekterkennung import objekterkennung
 import time
+import json
 import string
 import random
 
 #uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
-app = FastAPI(debug=True)
+app = FastAPI()
 app.mount("/data", StaticFiles(directory="data"), name="data")
 
-#zusätzliche variable: speichern oder nicht!!!!!
+#zusätzliche variable: speichern oder nicht!!!
 @app.post("/upload")
-async def upload_image(user_id: str, file: UploadFile = None, db: Session = Depends(get_db)):
+async def upload_image(user_id: str = Form(...), file: UploadFile = None, db: Session = Depends(get_db)):
     
+    existing = db.query(models.User).filter(models.User.name == user_id).first()
+    if existing:
+        raise HTTPException(status_code=404, detail="User not found.")
+
     ts = time.time()
     temp_path = f"data/temp/{user_id}_{ts}.jpg"
     result_path = f"data/results/{user_id}_{ts}_rslt.jpg" 
@@ -30,7 +35,8 @@ async def upload_image(user_id: str, file: UploadFile = None, db: Session = Depe
 
 
     # KI zeug
-    category = objekterkennung(temp_path, result_path)
+    category_json = objekterkennung(temp_path, result_path)
+    category = json.dumps(category_json)  
 
     # In db speichern
     image_entry = models.Image(
@@ -44,9 +50,9 @@ async def upload_image(user_id: str, file: UploadFile = None, db: Session = Depe
     db.refresh(image_entry)
 
     return {
-    #    "id": image_entry.id,
-    #    "category": category,
-    #    "timestamp": str(image_entry.timestamp),
+        "id": image_entry.id,
+        "category": category,
+        "timestamp": str(image_entry.timestamp),
         "result_url": result_path
     }
 
@@ -86,7 +92,8 @@ def get_image(image_id: int, db: Session = Depends(get_db)):
 
 
 @app.post("/signup")
-def signup(name: str, password: str, db: Session = Depends(get_db)):
+def signin(name: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
+
     # prüfen ob existierend
     existing = db.query(models.User).filter(models.User.name == name).first()
     if existing:
@@ -105,6 +112,7 @@ def signup(name: str, password: str, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+
     return {"message": "User created.", "user_id": user.id}
 
 

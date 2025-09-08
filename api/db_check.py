@@ -1,4 +1,6 @@
 import sqlite3
+import os
+import glob
 
 DB_PATH = "app.db"
 
@@ -25,6 +27,14 @@ def anzeigen():
 def deleteACHTUNG():
     from database import SessionLocal
     import models
+
+    for file_path in glob.glob(os.path.join(r"D:\data\temp", "*")):
+        if os.path.isfile(file_path):
+            os.remove(file_path)
+
+    for file_path in glob.glob(os.path.join(r"D:\data\results", "*")):
+        if os.path.isfile(file_path):   
+            os.remove(file_path)
 
     db = SessionLocal()
 

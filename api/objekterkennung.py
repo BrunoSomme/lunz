@@ -1,20 +1,16 @@
 # objekterkennung.py
 import shutil
+import os
+from ultralytics import YOLO
+
+model = YOLO("yolov8n.pt") 
 
 def objekterkennung(temp_path, result_path):
 
-    file = open(temp_path, "rb")
+    results = model(temp_path)
 
+    results[0].save(filename=result_path)
 
+    os.remove(temp_path)
 
-
-
-
-
-
-
-
-    with open(result_path, "wb") as buffer:
-        shutil.copyfileobj(file, buffer)
-    
-    return "test"
+    return [model.names[int(cls)] for cls in results[0].boxes.cls]

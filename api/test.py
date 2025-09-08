@@ -1,32 +1,23 @@
 # client_test.py
 import requests
+import json
+from datetime import datetime
 
 # Server-IP deines Raspberry Pi einsetzen:
-BASE_URL = "http://127.0.0.1:8000"
-USER_ID = ''
-
-def pretty_print_POST(req):
-    print('{}\n{}\r\n{}\r\n\r\n{}'.format(
-        '-----------START-----------',
-        req.method + ' ' + req.url,
-        '\r\n'.join('{}: {}'.format(k, v) for k, v in req.headers.items()),
-        req.body,
-    ))
+BASE_URL = "http://192.168.178.49:8000"
+USER_ID = 'udvLAQFJ5e5K'
 
 # 1. Signup:
 def signup():
     global USER_ID 
-    #r = requests.post(f"{BASE_URL}/signup", data={"name":"Bruno","password":"Sommer"})
-    req = requests.Request("POST", f"{BASE_URL}/signup", data={"name":"Bruno","password":"Sommer"})
-    prepared = req.prepare()
-    pretty_print_POST(prepared)
-    #if r.status_code==200:
-    #    resp = r.json() 
-    #    user_id = resp["user_id"]
-    #    USER_ID = user_id
-    #    print("User ID:", user_id)
-    #else:
-    #    print(f"Error Code: {r.status_code}. User already exist8s",)
+    r = requests.post(f"{BASE_URL}/signup", data={"name":"pascal","password":"pw"})
+    if r.status_code==200:
+        resp = r.json() 
+        user_id = resp["user_id"]
+        USER_ID = user_id
+        print("User created. User ID:", user_id)
+    else:
+        print(r.status_code)
 
 #2 Signin
 def signin():
@@ -35,7 +26,7 @@ def signin():
     if r.status_code==200:
         resp = r.json() 
         user_id = resp["user_id"]
-        print("User ID:", user_id)
+        print("Signed in. User ID:", user_id)
     else:
         print(r.status_code)
     
@@ -47,10 +38,15 @@ def upload():
         files = {"file": ("test.jpg", f, "image/jpeg")}
         data = {"user_id": USER_ID}
         r = requests.post(f"{BASE_URL}/upload", files=files, data=data)
+
     if r.status_code==200:
-        print(r.json()) 
+        print("Upload erfolgreich.") 
+        resp = r.json() 
+        print(f"Im Bild mit der ID {resp['id']} "
+        f"wurde(n) das/die Objekt(e) {', '.join(json.loads(resp['category']))} gefunden "
+        f"(aufgenommen am {datetime.fromtimestamp(float(resp['timestamp'])).strftime('%d.%m-%Y um %H:%M:%S')}).")
     else:
-        print(f"Error Code: {r.status_code}. No Upload available",)
+        print(r.status_code)
 
 #4 Gallerie aufrufen
 def gallery():
@@ -70,8 +66,8 @@ def gallery():
 
 def main():
     signup()
-    #signin()
-    #upload()
+    signin()
+    upload()
     #gallery()
 
 if __name__ == "__main__":

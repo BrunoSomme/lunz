@@ -6,14 +6,10 @@ import time
 
 Base = declarative_base()
 
-#def generate_user_id(length=12):
-#    chars = string.ascii_letters + string.digits
-#    return ''.join(random.choices(chars, k=length))
-
 class User(Base):
     __tablename__ = "users"
 
-    id = Column(String(12), primary_key=True)#, default=generate_user_id)  # Auto-generiert, muss nicht übergeben werden
+    id = Column(String(12), primary_key=True)  # Auto-generiert, muss nicht übergeben werden
     name = Column(String, nullable=False, unique=True)
     password = Column(String, nullable=False)
 

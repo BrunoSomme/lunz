@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.example.kamera"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.example.kamera"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -26,6 +26,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
@@ -46,18 +47,16 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.camera.view)
+    implementation(libs.androidx.activity)
+    implementation(libs.volley)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    implementation("androidx.compose.material:material-icons-extended-android:1.7.8")
+    implementation("com.squareup.retrofit2:retrofit:3.0.0")
+    implementation("com.squareup.retrofit2:converter-moshi:3.0.0")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.9.3")
+    implementation("com.squareup.retrofit2:converter-gson:3.0.0")
 
-    val camerax_version = "1.4.2";
-    implementation("androidx.camera:camera-core:${camerax_version}")
-    implementation("androidx.camera:camera-camera2:${camerax_version}")
-    implementation("androidx.camera:camera-camera-view:${camerax_version}")
-    implementation("androidx.camera:camera-camera-lifecycle:${camerax_version}")
-    implementation("androidx.camera:camera-video:${camerax_version}")
-    implementation("androidx.camera:camera-extensions:${camerax_version}")
 }

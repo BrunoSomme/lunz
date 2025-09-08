@@ -18,10 +18,8 @@ app.mount("/data", StaticFiles(directory="data"), name="data")
 
 #zusätzliche variable: speichern oder nicht!!!!!
 @app.post("/upload")
-async def upload_image(file: UploadFile = None, db: Session = Depends(get_db)):
-
-    print("errrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr", file)
-    user_id = "Nhg3fmoPAO0O"
+async def upload_image(user_id: str, file: UploadFile = None, db: Session = Depends(get_db)):
+    
     ts = time.time()
     temp_path = f"data/temp/{user_id}_{ts}.jpg"
     result_path = f"data/results/{user_id}_{ts}_rslt.jpg" 

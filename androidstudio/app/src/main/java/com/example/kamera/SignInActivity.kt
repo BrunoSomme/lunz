@@ -36,7 +36,7 @@ class SignInActivity : AppCompatActivity() {
                     response = apiManager.signin(name = user, password = pass)
                 }.invokeOnCompletion{
                     if (response.code() != 200) {
-                        Toast.makeText(this, "User already exists", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
                     } else {
                         val viewIntent = Intent(this, MainActivity::class.java)
                         startActivity(viewIntent)

@@ -46,8 +46,10 @@ import kotlin.concurrent.thread
 
 
 private const val FILE_NAME ="photo.jpg"
+private const val BASEURL = "http://10.0.2.2:8000"
 private const val REQUEST_CODE = 42
 private lateinit var photoFile: File
+private lateinit var USERID: String
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,7 +62,7 @@ class MainActivity : AppCompatActivity() {
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
     val apiManager = Retrofit.Builder()
         .addConverterFactory(MoshiConverterFactory.create(moshi))
-        .baseUrl("http://10.0.2.2:8000")        // diese Verbindung wird gebraucht um mit dem Localhost zu kommunizieren
+        .baseUrl(BASEURL)        // diese Verbindung wird gebraucht um mit dem Localhost zu kommunizieren
         .build()
         .create(ApiManager::class.java)
 
@@ -116,26 +118,20 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
             val fileProvider = FileProvider.getUriForFile(this, "com.example.kamera.fileprovider", photoFile)
 
             imageView = findViewById(R.id.imageView)
             imageView.setImageBitmap(takenImage)
 
-            val user_id = "Irgendwas"
-            val file = File(photoFile.absolutePath)
-            val inputStream = contentResolver.openInputStream(fileProvider)
-            val outputStram = FileOutputStream(file)
-            inputStream!!.copyTo(outputStram)
-            val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), file)
-            val part = MultipartBody.Part.createFormData("pic", file.name, requestBody)
+            val user_id = "Nhg3fmoPAO0O"
+            val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), photoFile)
+            val part = MultipartBody.Part.createFormData("file", photoFile.name, requestBody)
             // upload des bildes
             lifecycleScope.launch {
-                val response = apiManager.upload(files = part)
-                Log.println(Log.DEBUG, "Mango", response)
+                val response = apiManager.upload(user_id = user_id, file = part)
             }
-
         }
 
         super.onActivityResult(requestCode, resultCode, data)
@@ -167,8 +163,9 @@ interface ApiManager {
     @Multipart
     @POST("upload")
     suspend fun upload(
-        @Part files: MultipartBody.Part,
-    ): String
+        @Query("user_id") user_id: String,
+        @Part file: MultipartBody.Part,
+    ): UploadResponse
 
     @GET("gallery/{UID}")
     suspend fun getGallery(@Path("UID") UID: String): Array<Gallery>
@@ -184,6 +181,10 @@ data class SignUpResponse(
 
 data class SignInResponse(
     val user_id: String
+)
+
+data class UploadResponse(
+    val result_url: String
 )
 
 data class FileData(

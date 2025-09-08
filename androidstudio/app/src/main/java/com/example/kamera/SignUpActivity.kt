@@ -41,7 +41,6 @@ class SignUpActivity : AppCompatActivity() {
         binding.signupButton.setOnClickListener {
             val user = binding.signupUser.text.toString()
             val pass = binding.signupPassword.text.toString()
-
             if (user.isNotEmpty() && pass.isNotEmpty()) {
                 lifecycleScope.launch {
                     response = apiManager.signup(username = user, password = pass)

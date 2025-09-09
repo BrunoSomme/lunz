@@ -5,7 +5,7 @@ from datetime import datetime
 
 # Server-IP deines Raspberry Pi einsetzen:
 BASE_URL = "http://192.168.178.49:8000"
-USER_ID = 'udvLAQFJ5e5K'
+USER_ID = ''
 
 # 1. Signup:
 def signup():
@@ -26,6 +26,7 @@ def signin():
     if r.status_code==200:
         resp = r.json() 
         user_id = resp["user_id"]
+        USER_ID = user_id
         print("Signed in. User ID:", user_id)
     else:
         print(r.status_code)

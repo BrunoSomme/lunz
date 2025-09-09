@@ -21,8 +21,8 @@ app.mount("/data", StaticFiles(directory="data"), name="data")
 @app.post("/upload")
 async def upload_image(user_id: str = Form(...), file: UploadFile = None, db: Session = Depends(get_db)):
     
-    existing = db.query(models.User).filter(models.User.name == user_id).first()
-    if existing:
+    existing = db.query(models.User).filter(models.User.id == user_id).first()
+    if not existing:
         raise HTTPException(status_code=404, detail="User not found.")
 
     ts = time.time()
@@ -90,7 +90,6 @@ def get_image(image_id: int, db: Session = Depends(get_db)):
 
 
 
-
 @app.post("/signup")
 def signin(name: str = Form(...), password: str = Form(...), db: Session = Depends(get_db)):
 
@@ -126,5 +125,5 @@ def signin(name: str = Form(...), password: str = Form(...), db: Session = Depen
     if user and user.password == password:
         return {"user_id": user.id}
     else:
-        raise HTTPException(status_code=400, detail="Falscher Username or Passwort.")
+        raise HTTPException(status_code=400, detail="Wrong Username or Password.")
 

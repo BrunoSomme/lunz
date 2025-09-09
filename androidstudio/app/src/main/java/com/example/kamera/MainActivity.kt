@@ -1,10 +1,12 @@
 package com.example.kamera
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -37,7 +39,8 @@ import kotlin.concurrent.thread
 
 
 private const val FILE_NAME ="photo.jpg"
-private const val BASEURL = "http://10.0.2.2:8000"
+//private const val BASEURL = "http://192.168.178.49:8000"
+private const val BASEURL = "http://10.70.119.5:8000"
 private const val REQUEST_CODE = 42
 private lateinit var photoFile: File
 private var category: String = ""
@@ -48,8 +51,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnTakePicture: Button
     private lateinit var GalleryButton: FloatingActionButton
     private lateinit var imageView: ImageView
+
     private lateinit var textView: TextView
     private lateinit var UploadButton: FloatingActionButton
+    private lateinit var Bitmap: Bitmap
 
     private var safedBool: Boolean = false
     val moshi = Moshi.Builder().addLast(KotlinJsonAdapterFactory()).build()
@@ -154,7 +159,7 @@ class MainActivity : AppCompatActivity() {
             //val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
             //val fileProvider = FileProvider.getUriForFile(this, "com.example.kamera.fileprovider", photoFile)
 
-            //imageView = findViewById(R.id.imageView)
+            imageView = findViewById(R.id.imageView)
             //imageView.setImageBitmap(takenImage)
             //thread {
                 //    val inputStream = URL("${BASEURL}/${result_url}").openStream()
@@ -172,16 +177,14 @@ class MainActivity : AppCompatActivity() {
                 textView.setText(response.category)
                 thread {
                     val inputStream = URL("${BASEURL}/${response.result_url}").openStream()
-                    setBitmap(inputStream)
+                    Bitmap = BitmapFactory.decodeStream(inputStream)
+                    Log.println(Log.DEBUG, "MAngo", "${Bitmap.toString()}")
                 }.join()
+                imageView.setImageBitmap(Bitmap)
             }
         }
 
         super.onActivityResult(requestCode, resultCode, data)
-    }
-    public fun setBitmap(newBitmap: InputStream) {
-        val bitmap = BitmapFactory.decodeStream(newBitmap)
-        this.imageView.setImageBitmap(bitmap)
     }
 
 }

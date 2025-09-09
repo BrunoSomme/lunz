@@ -13,7 +13,8 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-private const val BASEURL = "http://10.0.2.2:8000"
+//private const val BASEURL = "http://192.168.178.49:8000"
+private const val BASEURL = "http://10.70.119.5:8000"
 class SignInActivity : AppCompatActivity() {
     private lateinit var response : Response<SignInResponse>
     private lateinit var binding: ActivitySignInBinding

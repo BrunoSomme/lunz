@@ -18,9 +18,11 @@ import java.net.URL
 import kotlin.collections.mutableListOf
 import kotlin.concurrent.thread
 
-private const val BASEURL = "http://10.0.2.2:8000"
+//private const val BASEURL = "http://192.168.178.49:8000"
+private const val BASEURL = "http://10.70.119.5:8000"
 class SecondActivity : AppCompatActivity() {
     private lateinit var BackButton: FloatingActionButton
+    private var bitmap: Bitmap? = null
     private val pictureItems = mutableListOf<ListData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {

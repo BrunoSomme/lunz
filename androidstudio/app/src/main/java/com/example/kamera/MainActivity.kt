@@ -31,6 +31,9 @@ import okhttp3.RequestBody
 import retrofit2.http.Field
 import retrofit2.http.Multipart
 import retrofit2.http.Part
+import java.io.InputStream
+import java.net.URL
+import kotlin.concurrent.thread
 
 
 private const val FILE_NAME ="photo.jpg"
@@ -148,11 +151,15 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             pictureTaken = true
-            val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
-            val fileProvider = FileProvider.getUriForFile(this, "com.example.kamera.fileprovider", photoFile)
+            //val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
+            //val fileProvider = FileProvider.getUriForFile(this, "com.example.kamera.fileprovider", photoFile)
 
-            imageView = findViewById(R.id.imageView)
-            imageView.setImageBitmap(takenImage)
+            //imageView = findViewById(R.id.imageView)
+            //imageView.setImageBitmap(takenImage)
+            //thread {
+                //    val inputStream = URL("${BASEURL}/${result_url}").openStream()
+            //        setBitmap(inputStream)
+            //}.join()
 
             val user_id = UIDDAta().getUID()
             val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), photoFile)
@@ -163,10 +170,18 @@ class MainActivity : AppCompatActivity() {
                 category = response.category
                 textView = findViewById(R.id.textView)
                 textView.setText(response.category)
+                thread {
+                    val inputStream = URL("${BASEURL}/${response.result_url}").openStream()
+                    setBitmap(inputStream)
+                }.join()
             }
         }
 
         super.onActivityResult(requestCode, resultCode, data)
+    }
+    public fun setBitmap(newBitmap: InputStream) {
+        val bitmap = BitmapFactory.decodeStream(newBitmap)
+        this.imageView.setImageBitmap(bitmap)
     }
 
 }
@@ -202,7 +217,7 @@ interface ApiManager {
     ): UploadResponse
 
     @GET("gallery/{UID}")
-    suspend fun getGallery(@Path("UID") UID: String): Array<Gallery>
+    suspend fun getGallery(@Path("UID") UID: String?): Array<Gallery>
 
     @GET("data/result/{Pic}")
     suspend fun getPicture(@Path("Pic") Pic: String)

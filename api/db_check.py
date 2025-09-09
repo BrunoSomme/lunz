@@ -48,4 +48,4 @@ def deleteACHTUNG():
 
 if __name__ == "__main__":
     anzeigen()
-    deleteACHTUNG()
+    #deleteACHTUNG()

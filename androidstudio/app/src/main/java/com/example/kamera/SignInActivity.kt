@@ -35,12 +35,12 @@ class SignInActivity : AppCompatActivity() {
 
             if (user.isNotEmpty() && pass.isNotEmpty()) {
                 lifecycleScope.launch {
-                    response = apiManager.signin(name = user, password = pass)
+                    val hashedPass = pass.toSHA256()
+                    response = apiManager.signin(name = user, password = hashedPass)
                 }.invokeOnCompletion{
                     if (response.code() != 200) {
                         Toast.makeText(this, "User does not exist", Toast.LENGTH_SHORT).show()
                     } else {
-                        Log.println(Log.DEBUG, "Mango", "${response.body()?.user_id}")
                         UIDDAta().setUID(response.body()?.user_id)
                         val viewIntent = Intent(this, MainActivity::class.java)
                         startActivity(viewIntent)

@@ -44,12 +44,12 @@ class SignUpActivity : AppCompatActivity() {
             val pass = binding.signupPassword.text.toString()
             if (user.isNotEmpty() && pass.isNotEmpty()) {
                 lifecycleScope.launch {
-                    response = apiManager.signup(username = user, password = pass)
+                    val hashedPass = pass.toSHA256()
+                    response = apiManager.signup(username = user, password = hashedPass)
                 }.invokeOnCompletion{
                     if (response.code() != 200) {
                         Toast.makeText(this, "User already exists", Toast.LENGTH_SHORT).show()
                     } else {
-                        Log.println(Log.DEBUG, "Mango", "${response.body()?.user_id}")
                         UIDDAta().setUID(response.body()?.user_id)
                         val viewIntent = Intent(this, MainActivity::class.java)
                         startActivity(viewIntent)

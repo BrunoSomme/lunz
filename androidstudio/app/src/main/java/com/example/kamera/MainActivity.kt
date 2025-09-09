@@ -156,16 +156,8 @@ class MainActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
             pictureTaken = true
-            //val takenImage = BitmapFactory.decodeFile(photoFile.absolutePath)
-            //val fileProvider = FileProvider.getUriForFile(this, "com.example.kamera.fileprovider", photoFile)
 
             imageView = findViewById(R.id.imageView)
-            //imageView.setImageBitmap(takenImage)
-            //thread {
-                //    val inputStream = URL("${BASEURL}/${result_url}").openStream()
-            //        setBitmap(inputStream)
-            //}.join()
-
             val user_id = UIDDAta().getUID()
             val requestBody = RequestBody.create("image/*".toMediaTypeOrNull(), photoFile)
             val part = MultipartBody.Part.createFormData("file", photoFile.name, requestBody)
@@ -246,10 +238,5 @@ data class Gallery(
     val id: Int,
     val category: String,
     val timestamp: String,
-    //val info_text: String,        wenn pascal es schafft den mir wiederzugeben
     val result_url: String
 )
-
-
-// zusätzliche Variable beim hochladen für speichern nur gesetzt bei speicher Knopf
-// Passwort Hash256

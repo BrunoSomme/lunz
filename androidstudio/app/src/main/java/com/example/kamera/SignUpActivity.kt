@@ -49,6 +49,7 @@ class SignUpActivity : AppCompatActivity() {
                         Toast.makeText(this, "User already exists", Toast.LENGTH_SHORT).show()
                     } else {
                         Log.println(Log.DEBUG, "Mango", "${response.body()?.user_id}")
+                        UIDDAta().setUID(response.body()?.user_id)
                         val viewIntent = Intent(this, MainActivity::class.java)
                         startActivity(viewIntent)
                         finish()

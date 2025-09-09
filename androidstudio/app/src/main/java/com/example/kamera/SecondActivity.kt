@@ -21,7 +21,6 @@ import kotlin.concurrent.thread
 private const val BASEURL = "http://10.0.2.2:8000"
 class SecondActivity : AppCompatActivity() {
     private lateinit var BackButton: FloatingActionButton
-    private var bitmap: Bitmap? = null
     private val pictureItems = mutableListOf<ListData>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +34,8 @@ class SecondActivity : AppCompatActivity() {
             .create(ApiManager::class.java)
 
         lifecycleScope.launch {
-            val pictures = apiManager.getGallery("Nhg3fmoPAO0O")
+            val user_id = UIDDAta().getUID()
+            val pictures = apiManager.getGallery(user_id)
             thread {
                 for (i in pictures) {
                     val inputStream = URL("${BASEURL}/${i.result_url}").openStream()
